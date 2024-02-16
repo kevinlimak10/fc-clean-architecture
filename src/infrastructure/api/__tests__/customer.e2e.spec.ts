@@ -144,7 +144,7 @@ describe("E2E test for customer", () => {
   });
 
 
-  it("should return error with product null", async () => {
+  it("should return error with product name is null", async () => {
     const response = await request(app)
     .post("/product")
     .send({
@@ -156,7 +156,7 @@ describe("E2E test for customer", () => {
     expect(response.body.errors).toStrictEqual(expected);
   });
 
-  it("should return error with product empty", async () => {
+  it("should return error with product name empty", async () => {
     const response = await request(app)
     .post("/product")
     .send({
@@ -173,8 +173,19 @@ describe("E2E test for customer", () => {
     const response = await request(app)
     .post("/product")
     .send({
-      name: "",
-      price: undefined
+      name: "Abacate",
+      price: null
+    });
+
+    expect(response.status).toBe(400);
+    const responseExpected = [ { context: 'product', message: 'price must be a `number` type, but the final value was: `NaN`.' } ];
+    expect(response.body.errors).toStrictEqual(responseExpected);
+  });
+
+  it("should return error with two errors", async () => {
+    const response = await request(app)
+    .post("/product")
+    .send({
     });
 
     expect(response.status).toBe(400);
