@@ -136,10 +136,49 @@ describe("E2E test for customer", () => {
       .send();
 
     expect(response.status).toBe(200);
-    expect(response.body.products.length).toBe(1);
+    expect(response.body.products.length).toBe(2);
     expect(response.body.products[0].name).toBe('Maça');
     expect(response.body.products[0].price).toBe(20);
     expect(response.body.products[1].name).toBe('Banana');
     expect(response.body.products[1].price).toBe(9.99);
+  });
+
+
+  it("should return error with product null", async () => {
+    const response = await request(app)
+    .post("/product")
+    .send({
+      price: 20
+    });
+
+    const expected = [{context: 'product', message: 'Name is required'}]
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toStrictEqual(expected);
+  });
+
+  it("should return error with product empty", async () => {
+    const response = await request(app)
+    .post("/product")
+    .send({
+      name: "",
+      price: 20
+    });
+
+    expect(response.status).toBe(400);
+    const responseExpected = [ { context: 'product', message: 'Name is required' } ];
+    expect(response.body.errors).toStrictEqual(responseExpected);
+  });
+
+  it("should return error with price null", async () => {
+    const response = await request(app)
+    .post("/product")
+    .send({
+      name: "",
+      price: undefined
+    });
+
+    expect(response.status).toBe(400);
+    const responseExpected = [ { context: 'product', message: 'Name is required' }, { context: 'product', message: 'Price is required' } ];
+    expect(response.body.errors).toStrictEqual(responseExpected);
   });
 });

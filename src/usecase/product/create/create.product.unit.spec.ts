@@ -51,7 +51,7 @@ describe("Unit test create product use case", () => {
         input.price = null;
     
         await expect(productCreateUseCase.execute(input)).rejects.toThrow(
-          "Price is required"
+          "product: price must be a `number` type, but the final value was: `NaN`."
         );
       });
 });
