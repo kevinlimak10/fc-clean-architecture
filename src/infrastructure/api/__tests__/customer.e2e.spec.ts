@@ -99,4 +99,47 @@ describe("E2E test for customer", () => {
 
     
   });
+
+  it("should create a product", async () => {
+    const response = await request(app)
+      .post("/product")
+      .send({
+        name: "Maça",
+        price: 20
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe("Maça");
+    expect(response.body.price).toBe(20);
+  });
+
+
+  it("should list a product", async () => {
+    const responsePost = await request(app)
+    .post("/product")
+    .send({
+      name: "Maça",
+      price: 20
+    });
+
+    expect(responsePost.status).toBe(201);
+    const responsePost2 = await request(app)
+    .post("/product")
+    .send({
+      name: "Banana",
+      price: 9.99
+    });
+    expect(responsePost2.status).toBe(201);
+
+    const response = await request(app)
+      .get("/product")
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body.products.length).toBe(1);
+    expect(response.body.products[0].name).toBe('Maça');
+    expect(response.body.products[0].price).toBe(20);
+    expect(response.body.products[1].name).toBe('Banana');
+    expect(response.body.products[1].price).toBe(9.99);
+  });
 });
